@@ -11,6 +11,7 @@ with open('Data/portfolio.csv', 'rt') as f:
         total_cost = nshares*price
         row.append(total_cost)
         print(row, end='')
+    print(total_cost)
             
           
             
