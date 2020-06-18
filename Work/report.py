@@ -19,20 +19,62 @@ def read_portfolio(filename):
             stock = {
                  'name'   : row[0],
                  'shares' : int(row[1]),
-                 'price'   : float(row[2])
+                 'buyprice'   : float(row[2])
             }
             portfolio.append(stock)
 
     return portfolio
 
 def read_prices(filename):
+    '''
+    Read a CSV file of price data into a dict mapping names to prices.
+    '''
     prices = {}
     with open(filename) as f:
         rows = csv.reader(f)
-        
         for row in rows:
-            stock = {
-                row[0]  :  row[1]
-            }
-            prices.append(stock)
-    return prices            
+            try:
+                prices[row[0]] = float(row[1])
+            except IndexError:
+                pass
+
+    return prices
+
+
+def make_report_data(portfolio, prices):
+    '''
+    Make a list of (name, shares, price, change) tuples given a portfolio list
+    and prices dictionary.
+    '''
+    rows = []
+    for stock in portfolio:
+        current_price = prices[stock['name']]
+        change = current_price - stock['buyprice']
+        valuechange = change*stock['shares']
+        summary = (stock['name'], stock['shares'], current_price, change, valuechange)
+        rows.append(summary)
+    return rows
+
+
+# Read data files and create the report data        
+
+portfolio = read_portfolio('Data/portfolio.csv')
+prices = read_prices('Data/prices.csv')
+
+# Generate the report data
+
+report = make_report_data(portfolio, prices)
+
+# Initiate portfolio value
+portfolio_value = 0.0
+
+# Output the report
+headers = ('Name', 'Shares', 'Price', 'Change', 'Value')
+print('%10s %10s %10s %10s %10s' % headers)
+print(('-' * 10 + ' ') * len(headers))
+for row in report:
+    print('%10s %10d %10.2f %10.2f %10.2f' % row)
+    portfolio_value += row[4]
+print('The total value of the portfolio is:', portfolio_value)    
+    
+
