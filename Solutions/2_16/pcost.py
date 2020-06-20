@@ -22,11 +22,6 @@ def portfolio_cost(filename):
 
     return total_cost
 
-import sys
-if len(sys.argv) == 2:
-    filename = sys.argv[1]
-else:
-    filename = input('Enter a filename:')
 
-cost = portfolio_cost(filename)
+cost = portfolio_cost('Data/missing')
 print('Total cost:', cost)
